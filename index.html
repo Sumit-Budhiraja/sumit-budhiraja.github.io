@@ -29,10 +29,21 @@
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  <style type="text/css">
+  	.alert {
+  text-align: center;
+  padding: 10px;
+  background-color: #79c879;
+  color: #fff;
+  margin-bottom: 10px;
+  display: none;
+}
+  </style>
   </head>
   <body bgcolor="black">
     <!-- Reference item-->
     <!-- navbar-->
+    <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
     <header class="header">
       <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container"><a href="#intro" class="navbar-brand scrollTo">Sumit Budhiraja</a>
@@ -440,46 +451,110 @@
         </div>
       </div>
     </section>
-    <!-- Contact-->
-    <section id="contact" data-animate="bounceIn" class="contact-section contact">
+       <section id="contact" data-animate="bounceIn" class="contact-section contact">
       <div class="container">
         <header class="text-center">
           <h2 class="title">Contact me</h2>
         </header>
         <div class="row">
           <div class="col-lg-8 mx-auto">
-            <form id="contact-form" method="post" action="">
+          	<div class="contact">
+        	<div class="alert">Your message has been sent</div>
+            <form id="contactForm">
               <div class="messages"></div>
               <div class="controls">
                 <div class="row">
                   <div class="col-md-6">
-                    <input type="text" name="name" placeholder="Your firstname *" required="required" class="form-control">
+                    <input type="text" name="name" id="name" placeholder="Your firstname *" required="required" class="form-control">
                   </div>
                   <div class="col-md-6">
-                    <input type="text" name="surname" placeholder="Your lastname *" required="required" class="form-control">
+                    <input type="text" name="surname" id="surname"placeholder="Your lastname *" required="required" class="form-control">
                   </div>
                   <div class="col-md-6">
-                    <input type="text" name="email" placeholder="Your email *" required="required" class="form-control">
+                    <input type="text" name="email" id="email" placeholder="Your email *" required="required" class="form-control">
                   </div>
                   <div class="col-md-6">
-                    <input type="text" name="phone" placeholder="Your phone" class="form-control">
+                    <input type="text" name="phone" id="phone"placeholder="Your phone" class="form-control">
                   </div>
                   <div class="col-md-12">
-                    <textarea name="message" placeholder="Message for me *" rows="4" required="required" class="form-control"></textarea>
+                    <textarea name="message" id="message" placeholder="Message for me *" rows="4" required="required" class="form-control"></textarea>
                   </div>
                   <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-outline-primary">Send message</button>
+                    <button type="submit" id="submit" class="btn btn-outline-primary" >Send message</button>
                   </div>
                 </div>
               </div>
             </form>
+        </div>
           </div>
         </div>
       </div>
     </section>
     <!-- Map-->
-    <div id="map">
+   <!--  <div id="map"> -->
     </div>
+    <script>
+  // Your web app's Firebase configuration
+  var config = {
+    apiKey: "AIzaSyCSl0VWBeKvgo5xh1LdiPAJOpEldh2n4x0",
+    authDomain: "sumit-budhiraja.firebaseapp.com",
+    databaseURL: "https://sumit-budhiraja.firebaseio.com",
+    projectId: "sumit-budhiraja",
+    storageBucket: "sumit-budhiraja.appspot.com",
+    messagingSenderId: "203879130119",
+    appId: "1:203879130119:web:640878c1b2b821c10536a2"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(config);
+
+  //Reference messages collection
+let messagesRef = firebase.database().ref('messages');
+
+//listen to form
+document.getElementById('contactForm').addEventListener('submit', formSubmit);
+
+function formSubmit(e){
+    e.preventDefault();
+
+    // get Values
+    let name = getInputVal('name');
+    let surname = getInputVal('surname');
+    let email = getInputVal('email');
+    let phone = getInputVal('phone');
+    let message = getInputVal('message');
+
+    //save message
+
+    saveMessage(name, surname, email, phone, message);
+
+    //show alert
+    document.querySelector('.alert').style.display='block';
+
+    //Hide alert after 3 s
+    setTimeout(function(){
+        document.querySelector('.alert').style.display='none';
+    }, 7000)
+    //clear form
+    document.getElementById('contactForm').reset();
+}
+//function to get form values
+
+function getInputVal(id){
+    return document.getElementById(id).value;
+}
+
+//save message to firebase
+function saveMessage(name, surname, email, phone, message){
+    let newMessageRef = messagesRef.push();
+    newMessageRef.set({
+        name: name,
+        surname: surname,
+        email: email,
+        phone: phone,
+        message: message
+    });
+}
+</script>
     <footer class="main-footer">
       <div class="container">
         <div class="row">
